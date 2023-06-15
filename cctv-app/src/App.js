@@ -5,6 +5,7 @@ import HeaderTitle from './components/HeaderTitle';
 import Layout from './layout/Layout';
 import WatchCam from './components/WatchCam';
 import InformTable from './components/InformTable';
+import PeopleNum from './db/PeopleNum';
 
 function App() {
   const [imageURL, setImageURL] = useState('');
@@ -115,9 +116,14 @@ function App() {
 
   return (
     <Layout headerTtile={<HeaderTitle />}>
-      <WatchCam image={imageURL} />
-      <InformTable id={dataset.id} location={dataset.location} time={dataset.time} date={dataset.date} />
-      {/* <InformTable /> */}
+      <div className='img-imformation'>
+        <WatchCam image={imageURL} />
+        <InformTable id={dataset.id} location={dataset.location} time={dataset.time} date={dataset.date} />
+        {/* <InformTable /> */}
+      </div>
+      <div className ='people-num-chart'>
+          <PeopleNum />
+      </div>
     </Layout>
   );
 }
