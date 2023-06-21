@@ -1,16 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import AWS from 'aws-sdk';
 
+//차트 그리기 위함
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+
 import HeaderTitle from './components/HeaderTitle';
 import Layout from './layout/Layout';
 import WatchCam from './components/WatchCam';
 import InformTable from './components/InformTable';
+// import PeopleNum from './db/PeopleNum';
 
 function App() {
   const [imageURL, setImageURL] = useState('');
   const [dataset, setDataset] = useState([]);
 
+  ////////////////////////////DB백엔드 데이터//////////////////////////
+  const [backendData, setBackendData] = useState([{}])
+  ////////////////////////////////////////////////////////////////////
+
   useEffect(() => {
+    // backednAPI를 통해 데이터를 가져옴/////////////////////////////////
+    const getlastbackendData = async () => {
+      try{
+        const response = await fetch("/list");
+        const data = await response.json();
+        setBackendData(data);
+      } catch (error) {
+        console.log("Error fetching data:", error);
+      }
+    };
+    //////////////////////////////////////////////////////////////////////
+    
     AWS.config.update({
       region: 'eu-west-2',
       accessKeyId: 'AKIA5VZTIAOJ5WLDE5PE',                    //IAM에서 받아오기
@@ -40,6 +61,8 @@ function App() {
     //     setDataset(dataset);
     //   }
     // });
+
+
     const getlatestImg = async () => {
       try {
         const response = await s3Img.listObjectsV2({
@@ -111,15 +134,55 @@ function App() {
     };
     getlatestImg();
     getlatestDataset();
-  });
+    getlastbackendData();
+
+    // 2초마다 데이터를 가져옴
+    const interval = setInterval(() => {
+      getlatestImg();
+      getlatestDataset();
+      getlastbackendData();
+    }, 2000);
+
+    // 언마운트 시 인터벌 해제
+    return () => clearInterval(interval);
+  },[]);
+
+
+
 
   return (
     <Layout headerTtile={<HeaderTitle />}>
-      <WatchCam image={imageURL} />
-      <InformTable id={dataset.id} location={dataset.location} time={dataset.time} date={dataset.date} />
-      {/* <InformTable /> */}
+      <div className='img-imformation'>
+        <WatchCam image={imageURL} />
+        <InformTable id={dataset.id} location={dataset.location} time={dataset.time} date={dataset.date} />
+        {/* <InformTable /> */}
+      </div>
+
+      {/* 차트그리는 파트 */}
+      <div className='people-num-chart'>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            width={500}
+            height={300}
+            data={backendData}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="time_str" />
+            <YAxis dataKey="count" />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="count" stroke="#82ca9d" activeDot={{ r: 8 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </Layout>
   );
-}
+} 
 
 export default App;
