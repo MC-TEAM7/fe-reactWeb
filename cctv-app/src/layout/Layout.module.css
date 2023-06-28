@@ -21,7 +21,7 @@
 
   .contentContainer {
     /* background-color: green; */
-    display: inline;
+    display: grid;
     grid-template-columns: 1fr 1fr 0.2fr 1fr;
     height: 85%;
   }

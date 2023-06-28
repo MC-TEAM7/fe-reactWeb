@@ -13,6 +13,29 @@ const db = mysql.createPool({
     database : 'test'
 });
 
+app.get("/water", (req, res) => {
+  const sqlQuery = `
+    SELECT sub.date, sub.rain, sub.ws, sub.wf
+    FROM (
+      SELECT date, rain, ws, wf
+      FROM db2
+      ORDER BY date  DESC
+      LIMIT 5
+    ) as sub
+    ORDER BY STR_TO_DATE(sub.date, '%Y-%m-%d %H:%i:%s') ASC;
+    `;
+  db.query(sqlQuery, (err, result) => {
+    if (err) {
+          console.log('Error : ', err);
+          return;
+      }
+
+          console.log('Success1');
+          res.send(result);  
+  });
+
+});
+
 app.get("/list", (req, res) => {
   const sqlQuery = `
   

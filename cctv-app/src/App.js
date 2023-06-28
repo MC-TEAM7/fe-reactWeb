@@ -17,6 +17,7 @@ function App() {
 
   ////////////////////////////DB백엔드 데이터//////////////////////////
   const [backendData, setBackendData] = useState([{}])
+  const [backendData2, setBackendData2] = useState([{}]) //강수량
   ////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
@@ -27,6 +28,17 @@ function App() {
         const data = await response.json();
         setBackendData(data);
       } catch (error) {
+        console.log("Error fetching data:", error);
+      }
+    };
+    //////////////////////////////////////////////////////////////////////
+
+    const getlastbackendData2 = async () => {
+      try{
+        const response = await fetch("/water");
+        const data = await response.json();
+        setBackendData2(data);
+      } catch (error) {   
         console.log("Error fetching data:", error);
       }
     };
@@ -135,12 +147,14 @@ function App() {
     getlatestImg();
     getlatestDataset();
     getlastbackendData();
+    getlastbackendData2();
 
     // 2초마다 데이터를 가져옴
     const interval = setInterval(() => {
       getlatestImg();
       getlatestDataset();
       getlastbackendData();
+      getlastbackendData2();
     }, 2000);
 
     // 언마운트 시 인터벌 해제
@@ -178,6 +192,32 @@ function App() {
             <Tooltip />
             <Legend />
             <Line type="monotone" dataKey="count" stroke="#82ca9d" activeDot={{ r: 8 }} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+        {/* 차트그리는 파트(유량, 강수량)*/}
+        <div className='waterflux-chart'>
+          <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            width={500}
+            height={300}
+            data={backendData2}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="wf" stroke="#8884d8" activeDot={{ r: 8 }} />
+            <Line type="monotone" dataKey="ws" stroke="#82ca9d" />
+            <Line type="monotone" dataKey="rain" stroke="#c42341" />
           </LineChart>
         </ResponsiveContainer>
       </div>
