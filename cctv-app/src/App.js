@@ -16,12 +16,11 @@ function App() {
   const [dataset, setDataset] = useState([]);
 
   ////////////////////////////DB백엔드 데이터//////////////////////////
-  const [backendData, setBackendData] = useState([{}])  //사람수
-  const [backendData2, setBackendData2] = useState([{}]) //강수량
+  const [backendData, setBackendData] = useState([{}])
   ////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
-    // backednAPI를 통해 데이터를 가져옴(사람수)/////////////////////////////////
+    // backednAPI를 통해 데이터를 가져옴/////////////////////////////////
     const getlastbackendData = async () => {
       try{
         const response = await fetch("/list");
@@ -32,18 +31,7 @@ function App() {
       }
     };
     //////////////////////////////////////////////////////////////////////
-    ///////////backendAPI를 통해 데이터를 가져옴(유량, 강수량)/////////////
-    const getlastbackendData2 = async () => {
-      try{
-        const response = await fetch("/water");
-        const data = await response.json();
-        setBackendData2(data);
-      } catch (error) {   
-        console.log("Error fetching data:", error);
-      }
-    };
-
-
+    
     AWS.config.update({
       region: 'eu-west-2',
       accessKeyId: 'AKIA5VZTIAOJ5WLDE5PE',                    //IAM에서 받아오기
@@ -147,14 +135,12 @@ function App() {
     getlatestImg();
     getlatestDataset();
     getlastbackendData();
-    getlastbackendData2();
 
     // 2초마다 데이터를 가져옴
     const interval = setInterval(() => {
       getlatestImg();
       getlatestDataset();
       getlastbackendData();
-      getlastbackendData2();
     }, 2000);
 
     // 언마운트 시 인터벌 해제
@@ -166,12 +152,13 @@ function App() {
 
   return (
     <Layout headerTtile={<HeaderTitle />}>
-      {/* <InformTable /> */}
       <div className='img-imformation'>
         <WatchCam image={imageURL} />
         <InformTable id={dataset.id} location={dataset.location} time={dataset.time} date={dataset.date} />
+        {/* <InformTable /> */}
       </div>
-      {/* 차트그리는 파트(사람수)*/}
+
+      {/* 차트그리는 파트 */}
       <div className='people-num-chart'>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
@@ -191,32 +178,6 @@ function App() {
             <Tooltip />
             <Legend />
             <Line type="monotone" dataKey="count" stroke="#82ca9d" activeDot={{ r: 8 }} />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-       {/* 차트그리는 파트(유량, 강수량)*/}
-      <div className='waterflux-chart'>
-      <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            width={500}
-            height={300}
-            data={backendData2}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="wf" stroke="#8884d8" activeDot={{ r: 8 }} />
-            <Line type="monotone" dataKey="ws" stroke="#82ca9d" />
-            <Line type="monotone" dataKey="rain" stroke="#c42341" />
           </LineChart>
         </ResponsiveContainer>
       </div>
