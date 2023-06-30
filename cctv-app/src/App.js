@@ -9,14 +9,15 @@ import HeaderTitle from './components/HeaderTitle';
 import Layout from './layout/Layout';
 import WatchCam from './components/WatchCam';
 import InformTable from './components/InformTable';
-// import PeopleNum from './db/PeopleNum';
+
+
 
 function App() {
   const [imageURL, setImageURL] = useState('');
   const [dataset, setDataset] = useState([]);
 
   ////////////////////////////DB백엔드 데이터//////////////////////////
-  const [backendData, setBackendData] = useState([{}])
+  const [backendData, setBackendData] = useState([{}])   //사람수
   const [backendData2, setBackendData2] = useState([{}]) //강수량
   ////////////////////////////////////////////////////////////////////
 
@@ -168,60 +169,68 @@ function App() {
     <Layout headerTtile={<HeaderTitle />}>
       <div className='img-imformation'>
         <WatchCam image={imageURL} />
+      </div>
+
+      <div className='imange-detecting'>
+        <WatchCam image={imageURL} />
+      </div>
+
+      <div className='imformation'>
         <InformTable id={dataset.id} location={dataset.location} time={dataset.time} date={dataset.date} />
-        {/* <InformTable /> */}
       </div>
 
-      {/* 차트그리는 파트 */}
-      <div className='people-num-chart'>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            width={500}
-            height={300}
-            data={backendData}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="time_str" />
-            <YAxis dataKey="count" />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="count" stroke="#82ca9d" activeDot={{ r: 8 }} />
-          </LineChart>
-        </ResponsiveContainer>
+   
+      {/* 차트그리는 파트 */}   
+      <div>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                width={200}
+                height={100}
+                data={backendData}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="time_str" />
+                <YAxis dataKey="count" />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="count" stroke="#82ca9d" activeDot={{ r: 8 }} />
+              </LineChart>
+            </ResponsiveContainer>
       </div>
 
-        {/* 차트그리는 파트(유량, 강수량)*/}
-        <div className='waterflux-chart'>
-          <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            width={500}
-            height={300}
-            data={backendData2}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="wf" stroke="#8884d8" activeDot={{ r: 8 }} />
-            <Line type="monotone" dataKey="ws" stroke="#82ca9d" />
-            <Line type="monotone" dataKey="rain" stroke="#c42341" />
-          </LineChart>
-        </ResponsiveContainer>
+            {/* 차트그리는 파트(유량, 강수량)*/}
+            
+      <div chart='waterflux-chart'>
+              <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                width={200}
+                height={100}
+                data={backendData2}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="wf" stroke="#8884d8" activeDot={{ r: 8 }} />
+                <Line type="monotone" dataKey="ws" stroke="#82ca9d" />
+                <Line type="monotone" dataKey="rain" stroke="#c42341" />
+              </LineChart>
+            </ResponsiveContainer>
       </div>
-    </Layout>
+  </Layout>
   );
 } 
 

@@ -6,7 +6,12 @@ export default function Layout(props) {
       <div className={classes.header}>
         {props.headerTitle}
       </div>
-      <div className={classes.contentContainer}>{props.children}</div>
+      <div className={classes.contentContainer}>
+        {props.children}
+      </div>
+      <div className = {classes.chartContainer}>
+          {props.chart}
+      </div>
     </div>
   );
 }
