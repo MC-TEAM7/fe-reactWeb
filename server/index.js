@@ -10,7 +10,7 @@ const db = mysql.createPool({
     port : '3306',
     user : 'admin',
     password : '12345678',
-    database : 'test'
+    database : 'team7_database'
 });
 
 app.get("/water", (req, res) => {
@@ -18,7 +18,7 @@ app.get("/water", (req, res) => {
     SELECT sub.date, sub.rain, sub.ws, sub.wf
     FROM (
       SELECT date, rain, ws, wf
-      FROM db2
+      FROM water_flow
       ORDER BY date  DESC
       LIMIT 5
     ) as sub
