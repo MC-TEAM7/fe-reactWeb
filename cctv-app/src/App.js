@@ -78,31 +78,67 @@ function App() {
     // });
 
 
+    // const getlatestImg = async () => {
+    //   try {
+    //     console.log("이미지 가져오기 시도")
+    //     const response = await s3Img.listObjectsV2({
+    //       Bucket: "team7-cam",
+    //       MaxKeys: 100, // 조회할 최대 객체 수
+    //     }).promise();
+
+    //     const sortedObjects = response.Contents.sort((a, b) => {
+    //       return new Date(b.LastModified) - new Date(a.LastModified);
+    //     });
+
+    //     if (sortedObjects.length > 0) {
+    //       // 가장 최신 객체의 키 가져오기
+    //       const latestObjectKey = sortedObjects[0].Key;
+
+    //       const paramsLatestImg = {
+    //         Bucket: "team7-cam",
+    //         Key: latestObjectKey,
+    //       };
+    //       const imageUrl = s3Img.getSignedUrl('getObject', paramsLatestImg);
+    //       console.log("이미지 출력" )
+    //       setImageURL(imageUrl);
+    //     } else
+    //       // 최신 객체가 없는 경우 빈 배열로 설정
+    //       setImageURL([])
+
+    //   } catch (error) {
+    //     console.log("Error retrieving S3 objects:", error);
+    //   }
+    // };
+
     const getlatestImg = async () => {
       try {
+        console.log("이미지 가져오기 시도");
+    
         const response = await s3Img.listObjectsV2({
           Bucket: "team7-cam",
           MaxKeys: 100, // 조회할 최대 객체 수
         }).promise();
-
+    
         const sortedObjects = response.Contents.sort((a, b) => {
           return new Date(b.LastModified) - new Date(a.LastModified);
         });
-
+    
         if (sortedObjects.length > 0) {
           // 가장 최신 객체의 키 가져오기
           const latestObjectKey = sortedObjects[0].Key;
-
+    
           const paramsLatestImg = {
             Bucket: "team7-cam",
             Key: latestObjectKey,
           };
-          const imageUrl = s3Img.getSignedUrl('getObject', paramsLatestImg);
+    
+          const imageUrl = await s3Img.getSignedUrlPromise('getObject', paramsLatestImg);
+          console.log("이미지 출력");
           setImageURL(imageUrl);
-        } else
+        } else {
           // 최신 객체가 없는 경우 빈 배열로 설정
-          setImageURL([])
-
+          setImageURL([]);
+        }
       } catch (error) {
         console.log("Error retrieving S3 objects:", error);
       }
@@ -212,12 +248,12 @@ function App() {
       </div>
 
       <div className='imformation'>
-        <InformTable id={dataset.id} location={dataset.location} time={dataset.time} date={dataset.date} />
+        <InformTable id={dataset.id} detecting={dataset.detecting} accuracy={dataset.accuracy} date={dataset.date} />
       </div>
 
    
       {/* 차트그리는 파트 */}   
-      <div>
+        <div chart='waterflux-chart'>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 width={200}
@@ -230,7 +266,7 @@ function App() {
                   bottom: 5,
                 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid strokeDasharray="4 4" />
                 <XAxis dataKey="time_str" />
                 <YAxis dataKey="count" />
                 <Tooltip />
@@ -265,7 +301,7 @@ function App() {
                 <Line type="monotone" dataKey="rain" stroke="#c42341" />
               </LineChart>
             </ResponsiveContainer>
-      </div>
+        </div>
   </Layout>
   );
 } 

@@ -1,4 +1,4 @@
-.container {}
+
 
 .header {
   background-color: #17408B;
@@ -23,13 +23,13 @@
     /* background-color: green; */
     display: grid;
 
-
     grid-template-columns : 1fr 1fr 1fr;
     gap: 30px;
 
     grid-template-rows : 1fr 1fr;
     
-    height: 85%;
+    height: 80%;
+    width: 30%;
   }
 
   .chartContainer {

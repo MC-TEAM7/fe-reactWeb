@@ -39,14 +39,14 @@ app.get("/water", (req, res) => {
 app.get("/list", (req, res) => {
   const sqlQuery = `
   
-        SELECT DATE_FORMAT(sub.datetime, '%Y-%m-%d %H:%i:%s') as time_str , sub.count
-        from(   SELECT datetime, COUNT(*) AS count
-        FROM db1
-        GROUP BY datetime
-        ORDER BY datetime DESC
-        LIMIT 5
+        SELECT DATE_FORMAT(sub.date, '%Y-%m-%d %H:%i:%s') as time_str , sub.count
+        from(   SELECT date, COUNT(*) AS count
+        FROM swim
+        GROUP BY date
+        ORDER BY date DESC
+        LIMIT 10
         ) as sub
-        order by sub.datetime asc;
+        order by sub.date asc;
   `;
   db.query(sqlQuery, (err, result) => {
     if (err) {

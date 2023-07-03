@@ -16,13 +16,13 @@ export default function InformTable(props) {
                             <td>{props.date}</td>
                         </tr>
                         <tr>
-                            <td>Location</td>
-                            <td>{props.location}</td>
+                            <td>detecting</td>
+                            <td>{props.detecting}</td>
                         </tr>
-                        {/* <tr>
-                            <td>Time</td>
-                            <td>{props.time}</td>
-                        </tr> */}
+                        <tr>
+                            <td>Accuracy</td>
+                            <td>{props.accuracy}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
